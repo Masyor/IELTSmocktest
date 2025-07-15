@@ -301,7 +301,7 @@ ensuring its longevity is vital for our planet's well-being.</p>
                     'gfow25': 'winds',
                     'gfow26': 'existence',
                     'gfow27': 'glaciers',
-                    'gfow28': 'wellbeing'
+                    'gfow28': ['wellbeing','well-being']
                 }
 			},
 			//{
@@ -412,7 +412,8 @@ but to give up on their trusted gasoline engines. There is probably only one way
                 { id: 'tc31' },     // This refers to the gap for Q31
                 { id: 'tc32' },   // This refers to the gap for Q32
                 { id: 'tc33' },  // This refers to the gap for Q33
-                { id: 'tc34' }   // This refers to the gap for Q34
+                { id: 'tc34' },   // This refers to the gap for Q34
+				{ id: 'tc35' }   // This refers to the gap for Q35
             ],
             table: {
                 headers: ['Engine type', 'Advantages', 'Disadvantages', 'Comments'],

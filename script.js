@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (qGroup.type === 'matching-headings' || qGroup.type === 'matching-information') {
                         questionHtmlContent = `
                             ${numberSpan}
-                            <input type="text" class="user-answer-input" id="ans-${textId}-${item.id}" data-question-id="${item.id}" data-question-type="${qGroup.type}" maxlength="1" onkeyup="this.value = this.value.toUpperCase()">
+                            <input type="text" class="user-answer-input" id="ans-${textId}-${item.id}" data-question-id="${item.id}" data-question-type="${qGroup.type}" maxlength="4" onkeyup="this.value = this.value.toUpperCase()">
                             <span class="question-text">${item.text}</span>
                         `;
                     } else if (qGroup.type === 'true-false-not-given') {
