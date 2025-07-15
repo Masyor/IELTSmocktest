@@ -1,0 +1,243 @@
+body {
+    font-family: "Roboto", sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+
+.container {
+    /* max-width: 1200px; */
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.timer {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #d9534f; /* Bootstrap's danger red */
+}
+
+.text-navigation button {
+    padding: 10px 15px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+.text-navigation button.active {
+    background-color: #007bff; /* Bootstrap's primary blue */
+    color: white;
+    border-color: #007bff;
+}
+
+.test-area {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.reading-passage {
+    flex: 1; /* Takes up half the space */
+    border: 1px solid #ddd;
+    padding: 15px;
+    overflow-y: auto; /* Enable scrolling for long texts */
+    max-height: 70vh; /* Limit height to prevent passage from taking too much space */
+    line-height: 1.6;
+    user-select: text; /* Allows text selection */
+}
+
+.questions-area {
+    flex: 1; /* Takes up the other half */
+    border: 1px solid #ddd;
+    padding: 15px;
+    overflow-y: auto; /* Enable scrolling for long question sets */
+    max-height: 70vh;
+}
+
+/* Highlighted text styling */
+::selection {
+    background: #ffcc00; /* Yellow highlight */
+}
+
+.highlighted {
+    background-color: #ffcc00; /* Consistent with selection */
+}
+
+.question-group {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #eee;
+}
+
+.question-group:last-child {
+    border-bottom: none;
+}
+
+/* Basic styling for different question types (will need more specific styling) */
+.question-group h3 {
+    margin-top: 0;
+    color: #333;
+}
+
+.question-group ol, .question-group ul {
+    padding-left: 20px;
+}
+
+.question-group li {
+    margin-bottom: 10px;
+}
+
+.footer {
+    text-align: right;
+    margin-top: 20px;
+}
+
+#submit-test-btn {
+    padding: 10px 20px;
+    background-color: #28a745; /* Bootstrap's success green */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+}
+
+#submit-test-btn:hover {
+    background-color: #218838;
+}
+
+/* Specific styles for different question types will go here */
+.multiple-choice label {
+    display: block;
+    margin-bottom: 2px;
+}
+
+.matching-headings li {
+    list-style: none;
+}
+
+.matching-headings input[type="text"] {
+    width: 50px;
+    text-align: center;
+    margin-right: 10px;
+}
+
+.true-false-not-given label {
+    margin-right: 15px;
+	margin-bottom: 10px;
+}
+
+.summary-completion input[type="text"] {
+    width: 200px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.short-answer input[type="text"] {
+    width: 90%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+/* Modal for score */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    max-width: 500px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.questions-area ul {
+    list-style: none; /* Removes default bullets */
+    padding-left: 0; /* Adjust padding if needed */
+}
+.questions-area ul li {
+    margin-bottom: 5px; /* Add some spacing between questions */
+}
+
+.table-completion-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+
+.table-completion-container th,
+.table-completion-container td {
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.table-completion-container th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.table-completion-input {
+    width: 50%; /* Adjust width as needed */
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1em;
+    box-sizing: border-box; /* Include padding in element's total width and height */
+    display: inline-block; /* Allows text and input on same line */
+    margin-left: 5px;
+}
+
+/* Ensure question numbers align nicely inside table cells */
+.table-completion-container .question-number {
+    display: inline-block;
+    min-width: 25px; /* Give it a consistent width */
+    text-align: right;
+    margin-right: 5px;
+    font-weight: bold;
+    color: #333;
+}
