@@ -391,6 +391,187 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }, 1000);
     }
+// ... (previous JavaScript code remains the same) ...
+
+    function displayScoreModal(correct, total) {
+        const modalHtml = `
+            <div id="scoreModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-button">&times;</span>
+                    <h2>Test Results</h2>
+                    <p>You scored: <strong>${correct} / ${total}</strong></p>
+                    <button id="showDetailsBtn" style="margin-top: 15px; padding: 10px 20px; cursor: pointer;">Show Answer Details</button>
+                    <div id="answerSummary" style="margin-top: 20px; max-height: 400px; overflow-y: auto; text-align: left; border-top: 1px solid #eee; padding-top: 15px; display: none;">
+                        </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+        const modal = document.getElementById('scoreModal');
+        const closeButton = modal.querySelector('.close-button');
+        const showDetailsBtn = modal.querySelector('#showDetailsBtn');
+        const answerSummaryDiv = modal.querySelector('#answerSummary');
+
+        modal.style.display = 'block';
+
+        closeButton.onclick = function() {
+            modal.remove();
+        };
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.remove();
+            }
+        };
+
+        showDetailsBtn.onclick = function() {
+            if (answerSummaryDiv.style.display === 'none') {
+                answerSummaryDiv.innerHTML = generateAnswerSummaryHtml();
+                answerSummaryDiv.style.display = 'block';
+                showDetailsBtn.textContent = 'Hide Answer Details';
+            } else {
+                answerSummaryDiv.style.display = 'none';
+                answerSummaryDiv.innerHTML = ''; // Clear content when hidden
+                showDetailsBtn.textContent = 'Show Answer Details';
+            }
+        };
+    }
+
+    function generateAnswerSummaryHtml() {
+        let summaryHtml = '<h3>Answer Summary</h3>';
+        let currentQuestionNumber = 0; // Use a separate counter for display in summary
+
+        ieltsData.forEach(textData => {
+            summaryHtml += `<h4>Text: ${textData.id.replace('text', 'Reading Passage ')}</h4>`;
+
+            textData.questions.forEach(qGroup => {
+                summaryHtml += `<h5>${qGroup.instructions.replace(/<\/?strong>|<\/?br\/?>/g, '')}</h5>`; // Clean up instructions
+
+                const itemsToProcess = qGroup.items || []; // Ensure 'items' array exists
+
+                // Prepare a map for table-completion to get original cell content if available
+                const tableCellMap = new Map();
+                if (qGroup.type === 'table-completion' && qGroup.table && qGroup.table.rows) {
+                    qGroup.table.rows.forEach(rowDataCells => {
+                        rowDataCells.forEach(cellContent => {
+                            const elementsInCell = Array.isArray(cellContent) ? cellContent : [cellContent];
+                            elementsInCell.forEach(element => {
+                                if (typeof element === 'object' && element !== null && element.gapId) {
+                                    tableCellMap.set(element.gapId, cellContent); // Store the entire cell content
+                                }
+                            });
+                        });
+                    });
+                }
+
+
+                itemsToProcess.forEach(item => {
+                    currentQuestionNumber++; // Increment for each item across all texts and groups
+
+                    const userAnswer = answers[textData.id]?.[item.id] || '(No answer)';
+                    let correctAnswersForThisItem = qGroup.answers?.[item.id];
+
+                    // Ensure correctAnswersForThisItem is always an array
+                    if (!Array.isArray(correctAnswersForThisItem)) {
+                        correctAnswersForThisItem = [correctAnswersForThisItem];
+                    }
+                    const displayCorrectAnswer = correctAnswersForThisItem.filter(ans => ans !== undefined).join(' / '); // Join multiple correct answers
+
+                    const normalizedUserAnswer = String(userAnswer).trim().toUpperCase();
+                    let isCorrect = false;
+                    for (const correctVariant of correctAnswersForThisItem) {
+                        const normalizedCorrectVariant = String(correctVariant || '').trim().toUpperCase();
+                        if (normalizedUserAnswer === normalizedCorrectVariant) {
+                            isCorrect = true;
+                            break;
+                        }
+                    }
+
+                    const statusClass = isCorrect ? 'correct-answer' : 'incorrect-answer';
+
+                    summaryHtml += `<div class="answer-item ${statusClass}">`;
+                    summaryHtml += `<p><strong>${currentQuestionNumber}.</strong> `;
+
+                    // Display question text based on type
+                    if (qGroup.type === 'table-completion') {
+                        // For table-completion, reconstruct the cell content to show context
+                        const cellContent = tableCellMap.get(item.id);
+                        if (cellContent) {
+                            let cellDisplayText = '';
+                            const elementsInCell = Array.isArray(cellContent) ? cellContent : [cellContent];
+                            elementsInCell.forEach(el => {
+                                if (typeof el === 'string') {
+                                    cellDisplayText += el;
+                                } else if (typeof el === 'object' && el !== null && el.gapId) {
+                                    if (el.gapId === item.id) {
+                                        cellDisplayText += `<u>[${currentQuestionNumber}]</u>`; // Highlight the specific gap
+                                    } else {
+                                        // If there are other gaps in the same cell, just show their number placeholder
+                                        // This requires finding their currentQuestionNumber which is complicated on the fly.
+                                        // For simplicity here, we'll just show a generic placeholder for other gaps.
+                                        cellDisplayText += `<u>[Gap]</u>`;
+                                    }
+                                }
+                            });
+                            summaryHtml += `(Table) ${cellDisplayText}`;
+                        } else {
+                             summaryHtml += `(Table Question ID: ${item.id})`; // Fallback
+                        }
+                    } else if (qGroup.type === 'multiple-choice') {
+                        summaryHtml += `(MC) ${item.question}`;
+                    } else if (qGroup.type === 'true-false-not-given') {
+                        summaryHtml += `(T/F/NG) ${item.text}`;
+                    } else if (qGroup.type === 'matching-headings' || qGroup.type === 'matching-information') {
+                         summaryHtml += `(Matching) ${item.text}`;
+                    } else if (qGroup.type === 'gap-fill' || qGroup.type === 'summary-completion' || qGroup.type === 'short-answer') {
+                        summaryHtml += item.text.replace('_____', '__________').replace('__________', '__________'); // Show gaps as underscores for context
+                    } else {
+                        summaryHtml += `(Unknown type) ${item.id}`; // Fallback for unhandled types
+                    }
+                    summaryHtml += `</p>`;
+
+                    summaryHtml += `<p>Your Answer: <span class="user-given-answer">${userAnswer}</span></p>`;
+                    summaryHtml += `<p>Correct Answer: <span class="actual-correct-answer">${displayCorrectAnswer}</span></p>`;
+                    summaryHtml += `</div>`;
+                });
+            });
+        });
+
+        // Add some basic styling for the summary
+        const style = `
+            <style>
+                .answer-item {
+                    border: 1px solid #ddd;
+                    padding: 10px;
+                    margin-bottom: 10px;
+                    border-radius: 5px;
+                }
+                .answer-item p {
+                    margin: 5px 0;
+                }
+                .answer-item.correct-answer {
+                    background-color: #e6ffe6; /* Light green */
+                    border-color: #a3e9a3;
+                }
+                .answer-item.incorrect-answer {
+                    background-color: #ffe6e6; /* Light red */
+                    border-color: #e9a3a3;
+                }
+                .user-given-answer {
+                    font-weight: bold;
+                }
+                .actual-correct-answer {
+                    color: green;
+                    font-weight: bold;
+                }
+                .incorrect-answer .user-given-answer {
+                    color: red;
+                }
+            </style>
+        `;
+        return style + summaryHtml;
+    }
 
     loadContent(currentTextId);
     startTimer();
