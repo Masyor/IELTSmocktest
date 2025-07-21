@@ -380,18 +380,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 `${String(hours).padStart(2, '0')}:` +
                 `${String(minutes).padStart(2, '0')}:` +
                 `${String(seconds).padStart(2, '0')}`;
+
             if (timeLeft <= 0) {
-                clearInterval(timerInterval);
-                alert('Time is up! The test has ended.');
-                calculateScore();
-                submitTestBtn.disabled = true;
+                clearInterval(timerInterval); // Stop the timer
+                // alert('Time is up! The test has ended.'); 
+                calculateScore(); // Show the results screen immediately
+                submitTestBtn.disabled = true; // Disable the submit button
+                // Disable all input fields to prevent further changes
                 document.querySelectorAll('#questions-area input, #questions-area textarea, #questions-area select').forEach(input => {
                     input.disabled = true;
                 });
             }
         }, 1000);
     }
-// ... (previous JavaScript code remains the same) ...
 
     function displayScoreModal(correct, total) {
         const modalHtml = `
