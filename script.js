@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
             questionsAreaDiv.appendChild(questionGroupDiv);
         });
 
-        saveCurrentAnswers();
+        //saveCurrentAnswers();
         applyHighlights(currentTextId, 'questions');
         restoreAnswers(currentTextId);
         textNavigationButtons.forEach(btn => {
