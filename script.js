@@ -385,7 +385,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearInterval(timerInterval); // Stop the timer
                 // alert('Time is up! The test has ended.'); 
                 calculateScore(); // Show the results screen immediately
-                submitTestBtn.disabled = true; // Disable the submit button
+                //submitTestBtn.disabled = true; // Disable the submit button
                 // Disable all input fields to prevent further changes
                 document.querySelectorAll('#questions-area input, #questions-area textarea, #questions-area select').forEach(input => {
                     input.disabled = true;
@@ -577,3 +577,4 @@ document.addEventListener('DOMContentLoaded', () => {
     loadContent(currentTextId);
     startTimer();
 });
+
